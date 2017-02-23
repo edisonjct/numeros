@@ -22,7 +22,7 @@ class ClienteModelo extends Conexion {
     }
 
     public function buscar_clientes($nombre) {
-        $query = "SELECT * FROM tbl_clientes WHERE nombres LIKE '%$nombre%' OR cedula LIKE '%$nombre%' LIMIT 0, 8";
+        $query = "SELECT * FROM tbl_clientes WHERE nombres LIKE '%$nombre%' OR cedula LIKE '%$nombre%' order by id desc LIMIT 0, 8";
         $result = $this->conexion_db->query($query);
         $cliente = $result->fetch_all(MYSQL_ASSOC);
         $result->close();
@@ -31,7 +31,7 @@ class ClienteModelo extends Conexion {
     }
 
     public function carga_clientes() {
-        $query = "SELECT * FROM tbl_clientes LIMIT 0, 10";
+        $query = "SELECT * FROM tbl_clientes order by id desc LIMIT 0, 10";
         $result = $this->conexion_db->query($query);
         $cliente = $result->fetch_all(MYSQL_ASSOC);
         $result->close();
@@ -68,18 +68,46 @@ class ClienteModelo extends Conexion {
 
     public function grsrcliente($idcliente, $tipo, $servicio) {
         $query = "INSERT INTO tbl_tipo_servicio_cliente (id_cliente, id_tipo_servicio, id_servicio, estado) VALUES ($idcliente,$tipo,$servicio, 3)";
-        $guardar = $this->conexion_db->query($query);        
+        $guardar = $this->conexion_db->query($query);
         $this->conexion_db->close();
         return $guardar;
     }
-    
+
+    public function guardarcliente($cedula, $nombre, $tipo, $direccion, $cuidad, $telefono, $correo, $cargo, $actividad) {
+        $query = "INSERT INTO tbl_clientes (nombres, cedula, direccion, telefono, correo, id_cargo, actividad, fecha_ingreso, id_ciudad, id_tipo, saldo) VALUES ('$nombre', '$cedula','$direccion','$telefono','$correo', '$cargo','$actividad', CURDATE(),'$cuidad','$tipo', '0');";
+        $guardar = $this->conexion_db->query($query);
+        $this->conexion_db->close();
+        return $guardar;
+    }
+
     public function eliminarservicicliente($id) {
         $query = "DELETE FROM tbl_tipo_servicio_cliente WHERE (id='$id');";
-        $eliminarsc = $this->conexion_db->query($query);        
+        $eliminarsc = $this->conexion_db->query($query);
         $this->conexion_db->close();
         return $eliminarsc;
     }
-    
-    
+
+    public function insertardocumentos($id, $descripcion, $documento) {
+        $query = "INSERT INTO tbl_documentos (id_cliente, descripcion, nombrearchivo, estado) VALUES ('$id', '$descripcion', '$documento', '1');";
+        $insertardocumento = $this->conexion_db->query($query);
+        $this->conexion_db->close();
+        return $insertardocumento;
+    }
+
+    public function mostrardocumentos($id) {
+        $query = "SELECT * FROM tbl_documentos WHERE id_cliente = '$id' AND estado = 1;";
+        $result = $this->conexion_db->query($query);
+        $mostrardocumentos = $result->fetch_all(MYSQL_ASSOC);
+        $result->close();
+        $this->conexion_db->close();
+        return $mostrardocumentos;
+    }
+
+    public function eliminardocumentocliente($id) {
+        $query = "DELETE FROM tbl_documentos WHERE (id='$id');";
+        $eliminardc = $this->conexion_db->query($query);
+        $this->conexion_db->close();
+        return $eliminardc;
+    }
 
 }

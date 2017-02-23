@@ -9,7 +9,7 @@ $(document).ready(function () {
     $('#txt-bs-cliente').focus();
     $('#btn-guardar-cliente').hide();
     $('#btn-modificar-cliente').hide();
-
+    $("#txt-cedulacliente").prop('disabled', true);
 
     $('#btn-agregar-serviciocliente').on('click', function () {
 
@@ -69,10 +69,10 @@ function nuevo_clientes() {
     $('#txt-cedulacliente').val('');
     $('#txt-nombrecliente').val('');
     $('#txt-direccioncliente').val('');
-    $('#carga-combo-ciudad').val('');
+    //$('#carga-combo-ciudad').val('');
     $('#txt-telefonocliente').val('');
     $('#txt-correocliente').val('');
-    $('#carga-combo-cargo').val('');
+    //$('#carga-combo-cargo').val('');
     $('#btn-guardar-cliente').show();
     $('#btn-modificar-cliente').hide();
 }
@@ -92,6 +92,7 @@ function tipoclientes() {
 }
 
 function servicioscliente(id) {
+    //alert("aqui servicios");
     $('#mostrar-servicios-cliente').html('<div align="center"><i class="fa fa-refresh fa-spin" style="font-size:40px"></i></div>');
     var url = '../../pages/controlador/ClienteControlador.php';
     $.ajax({
@@ -100,6 +101,21 @@ function servicioscliente(id) {
         data: 'proceso=serivioscliente&id=' + id,
         success: function (datos) {
             $('#mostrar-servicios-cliente').html(datos);
+        }
+    });
+    return false;
+}
+
+function cargardocumentos(id) {
+    //alert("aqui docuemn");
+    $('#mostrar-documentos').html('<div align="center"><i class="fa fa-refresh fa-spin" style="font-size:40px"></i></div>');
+    var url = '../../pages/controlador/ClienteControlador.php';
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: 'proceso=mostrardoc&id=' + id,
+        success: function (datos) {
+            $('#mostrar-documentos').html(datos);
         }
     });
     return false;
@@ -148,32 +164,111 @@ function eliminarserivciocliente(id) {
             });
 }
 
-function upload_image() {
-    $(".upload-msg").text('Cargando...');
-    var inputFileImage = document.getElementById("fileToUpload");
-    var file = inputFileImage.files[0];
-    var data = new FormData();
-    data.append('fileToUpload', file);
-
-    /*jQuery.each($('#fileToUpload')[0].files, function(i, file) {
-     data.append('file'+i, file);
-     });*/
-
-    $.ajax({
-        url: "upload.php", // Url to which the request is send
-        type: "POST", // Type of request to be send, called as method
-        data: data, // Data sent to server, a set of key/value pairs (i.e. form fields and values)
-        contentType: false, // The content type used when sending data to the server.
-        cache: false, // To unable request pages to be cached
-        processData: false, // To send DOMDocument or non processed data file it is set to false
-        success: function (data)   // A function to be called if request succeeds
-        {
-            $(".upload-msg").html(data);
-            window.setTimeout(function () {
-                $(".alert-dismissible").fadeTo(500, 0).slideUp(500, function () {
-                    $(this).remove();
-                });
-            }, 5000);
+function uploadAjax() {
+    var cliente = $('#txt-id').val();
+    var desc = $('#desc').val();
+    //alert(desc);
+    var inputFileImage = document.getElementById("foto");
+    if (desc != '' && inputFileImage != '') {
+        var file = inputFileImage.files[0];
+        var data = new FormData();
+        data.append('foto', file);
+        var url = '../../pages/controlador/UploadClientesControlador.php?id=' + cliente + '&desc=' + desc;
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: false,
+            data: data,
+            processData: false,
+            cache: false,
+            success: function (datos) {
+                $('#desc').val('');
+                $('#foto').val('');
+                $('#mostrar-documentos').html(datos); // display response from the PHP script, if any   
+            }
         }
-    });
+        );
+        return false;
+    } else {
+        swal("¡Error!", "Ingrese los Parametros de Documentos", "error");
+        return false;
+    }
 }
+
+function eliminardocumentocliente(id) {
+    var cliente = $('#txt-id').val();
+    swal({
+        title: "¿Seguro que de eliminar este Documento?", text: "No podrás deshacer este paso...", type: "warning", showCancelButton: true, cancelButtonText: "Cancelar", confirmButtonColor: "#DD6B55", confirmButtonText: "Aceptar", closeOnConfirm: false},
+            function () {
+                $('#mostrar-documentos').html('<div align="center"><i class="fa fa-refresh fa-spin" style="font-size:40px"></i></div>');
+                var url = '../../pages/controlador/ClienteControlador.php';
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: 'proceso=eliminardocumento&id=' + id + '&cliente=' + cliente,
+                    success: function (datos) {
+                        $('#div-mensaje').html(datos);
+                    }
+                });
+                return false;
+            });
+}
+
+function guardardatospersonales() {
+    var cedula = $('#txt-cedulacliente').val();
+    var nombre = $('#txt-nombrecliente').val();
+    var tipo = $('#tipo-cliente').val();
+    var direccion = $('#txt-direccioncliente').val();
+    var cuidad = $('#carga-combo-ciudad').val();
+    var telefono = $('#txt-telefonocliente').val();
+    var correo = $('#txt-correocliente').val();
+    var cargo = $('#carga-combo-cargo').val();
+    var actividad = $('#txt-actividad').val();
+//    alert(cedula);
+//    alert(nombre);
+//    alert(tipo);
+//    alert(direccion);
+//    alert(cuidad);
+//    alert(telefono);
+//    alert(correo);
+//    alert(cargo);
+//    alert(actividad);
+    
+    if (cedula != '' && nombre != '' && direccion != '' && telefono != '' && correo != '') {
+        $('#div-mensaje').html('<div align="center"><i class="fa fa-refresh fa-spin" style="font-size:40px"></i></div>');
+        var url = '../../pages/controlador/ClienteControlador.php';
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: 'proceso=guardarservicio&cedula=' + cedula + '&nombre=' + nombre + '&tipo=' + tipo + '&direccion=' + direccion + '&cuidad=' + cuidad + '&telefono=' + telefono + '&correo=' + correo + '&cargo=' + cargo + '&actividad=' + actividad,
+            success: function (datos) {
+                $('#div-mensaje').html(datos);
+                return false;
+            }
+        });
+    } else {
+        swal("¡Error!", "Ingrese los Campos Obligatorios, Cliente No Registrado", "error");
+    }
+
+
+
+//    if (cedula != '' && nombre != '' && direccion != '' && telefono != '' && correo != '') {
+//        $('#datos-personales').html('<div align="center"><i class="fa fa-refresh fa-spin" style="font-size:40px"></i></div>');
+//        var url = '../../pages/controlador/ClienteControlador.php';
+//        $.ajax({
+//            type: 'POST',
+//            url: url,
+//            data: 'proceso=guardarservicio&cedula=' + cedula + '&nombre=' + nombre + '&tipo=' + tipo + '&direccion=' + direccion + '&cuidad=' + cuidad + '&telefono=' + telefono + '&correo=' + correo + '&cargo=' + cargo + '&actividad=' + actividad,
+//            success: function (datos) {
+//                $('#div-mensaje').html(datos);
+//                return false;
+//            }
+//        });
+//        return false;
+//    } else {
+//        swal("¡Error!", "Ingrese los Campos Obligatorios, Cliente No Registrado", "error");        
+//    }
+}
+
+
+

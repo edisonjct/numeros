@@ -64,7 +64,7 @@ if (isset($_SESSION['usuario'])) {
                                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>                                
                                         </div>
                                     </div>
-                                    <form class="form-horizontal">
+                                    <form class="form-horizontal" id="formulario">
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <div class="col-sm-12">
@@ -93,7 +93,7 @@ if (isset($_SESSION['usuario'])) {
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_1">                                            
                                             <form class="form-horizontal">
-                                                <div class="box-body">
+                                                <div class="box-body" id="datos-personales">
                                                     <div class="form-group">
                                                         <label for="inputEmail3" class="col-sm-2 control-label" ><code>*</code>Cedula</label>
                                                         <div class="col-sm-10">
@@ -150,15 +150,16 @@ if (isset($_SESSION['usuario'])) {
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div id="div-mensaje"></div>
                                                 <div class="box-footer">
                                                     <button type="submit" class="btn btn-default" onclick="nuevo_clientes();">Nuevo</button>
-                                                    <button type="submit" class="btn btn-info pull-right" id="btn-guardar-cliente">Guardar</button>
-                                                    <button type="button" class="btn btn-google pull-right" id="btn-modificar-cliente" onclick="modificarusuario()">Modificar</button>
+                                                    <button type="button" class="btn btn-info pull-right" id="btn-guardar-cliente" onclick="guardardatospersonales();">Guardar</button>
+                                                    <button type="button" class="btn btn-google pull-right" id="btn-modificar-cliente" onclick="">Modificar</button>
                                                 </div>
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_2">
-                                            <form class="form-horizontal">
+                                            <form class="form-horizontal" id="formulario">
                                                 <div class="box-body">
                                                     <div class="form-group">                                                       
                                                         <div class="col-sm-5">
@@ -170,7 +171,6 @@ if (isset($_SESSION['usuario'])) {
                                                         <div class="col-sm-1">
                                                             <button type="button" class="btn btn-info pull-right" onclick="agregarserviciocliente();">+</button>
                                                         </div>
-
                                                     </div>                                                    
                                                 </div>
                                                 <div class="box-footer">                                                    
@@ -180,22 +180,46 @@ if (isset($_SESSION['usuario'])) {
                                             </form>
                                         </div>
                                         <div class="tab-pane" id="tab_3">
-                                            <form class="form-horizontal" enctype="multipart/form-data" id="formuploadajax" method="post">
+                                            <form class="form-horizontal" id="documentos-cliente" method="post">
                                                 <div class="box-body">
                                                     <div class="form-group">
                                                         <div class="col-sm-5">
-                                                            <input type="text" class="form-control" required="required" id="txt-actividad" placeholder="Descripcion del Archivo">
+                                                            <input type="text" class="hidden" id="txt-id">
+                                                            <input type="text" class="form-control" id="desc" name="desc" placeholder="Descripcion del Archivo">
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <input type="file"  id="fileToUpload" > 
+                                                            <input type="file" class="form-control" id="foto" name="foto" > 
                                                         </div>          
                                                         <div class="col-sm-1">
-                                                            <button type="submit" class="btn btn-info pull-right" id="btn-subir-archivo" onclick="upload_image();">+</button>
+                                                            <button type="button" class="btn btn-info pull-right" id="btn-subir-archivo" onclick="uploadAjax();">+</button>
                                                         </div>
+                                                    </div>                          
+                                                    <div id="mostrar-documentos"></div>
+                                                </div>
+                                            </form>
+                                            <!-- MODAL PARA VISUALIZAR LOS DOCUMENTOS SUBIDOS -->
+                                            <div>
+                                                <div id="myModal" class="modal fade" role="dialog">
+                                                    <div class="modal-dialog">
+
+                                                        <!-- Modal content-->
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                <h4 class="modal-title">Modal Header</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div id="dynamic-content"></div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
-                                                    <div id="mensaje"></div>
-                                                </div>                                                
-                                            </form>                                                                                                                                  
+                                                </div>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

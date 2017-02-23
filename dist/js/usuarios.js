@@ -179,7 +179,7 @@ function modificarusuario() {
                 var estado = $('#carga-combo-estado').val();
                 var empresa = $('#carga-combo-empresa').val();
                 $('#div-mensaje').html('<div align="center"><i class="fa fa-refresh fa-spin" style="font-size:40px"></i></div>');
-                var url = '../../pages/controlador/UsuariosControlador.php';
+                var url = '../../pages/controlador/ClienteControlador.php';
                 $.ajax({
                     type: 'POST',
                     url: url,
